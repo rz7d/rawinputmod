@@ -1,6 +1,10 @@
 package com.github.asteriskmods.inputtweaks;
 
-import com.github.asteriskmods.inputtweaks.rawinput.RawInputMouseHelper;
+import java.util.List;
+import java.util.Locale;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -10,11 +14,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.IClientCommand;
-
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 public class RawInputCommand extends CommandBase implements IClientCommand {
 
@@ -31,16 +30,6 @@ public class RawInputCommand extends CommandBase implements IClientCommand {
     @Override
     public String getUsage(ICommandSender sender) {
         return "/rawinput <on|off>";
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return Arrays.asList("on", "off");
-    }
-
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
     }
 
     @Override
@@ -69,6 +58,16 @@ public class RawInputCommand extends CommandBase implements IClientCommand {
             default:
                 sender.sendMessage(new TextComponentString("Usage: /rawinput <on|off>"));
         }
+    }
+
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return true;
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return ImmutableList.of("on", "off");
     }
 
 }

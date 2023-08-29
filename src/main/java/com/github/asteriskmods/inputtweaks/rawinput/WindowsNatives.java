@@ -9,37 +9,40 @@ import java.nio.file.StandardCopyOption;
 
 import lombok.SneakyThrows;
 
-public class WindowsNatives {
+public final class WindowsNatives {
 
     @SneakyThrows
-    static void initNatives() {
+    static void init() {
         InputStream nativeLib = WindowsNatives.class.getResourceAsStream("/inputtweaks.dll");
         if (nativeLib == null) {
             throw new InternalError();
         }
-        Path tempFile = Files.createTempFile("native-", "-inputtweaks.dll");
-        Files.copy(nativeLib, tempFile, StandardCopyOption.REPLACE_EXISTING);
+        Path tempLib = Files.createTempFile("native-", "-inputtweaks.dll");
+        Files.copy(nativeLib, tempLib, StandardCopyOption.REPLACE_EXISTING);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                Files.deleteIfExists(tempFile);
+                Files.deleteIfExists(tempLib);
             } catch (IOException ignored) {
             }
         }));
-        System.load(tempFile.toAbsolutePath().toString());
+        System.load(tempLib.toAbsolutePath().toString());
 
-        Method updateMouseDelta = WindowsNatives.class.getDeclaredMethod("updateMouseDelta", int.class, int.class);
-        setMouseDeltaHandler(updateMouseDelta);
+        Method updateMouseDelta = WindowsNatives.class.getDeclaredMethod("updateMouseDeltaCallback", int.class, int.class);
+        setMouseDeltaCallback(updateMouseDelta);
     }
-
-    private static native void setMouseDeltaHandler(Method updateMouseDelta);
 
     static native boolean registerRawInputDevices(long hWnd);
 
     static native void rawInputWindowProc(long hWnd, int msg, long wParam, long lParam);
 
-    private static void updateMouseDelta(int x, int y) {
+    private static native void setMouseDeltaCallback(Method updateMouseDeltaCallback);
+
+    private static void updateMouseDeltaCallback(int x, int y) {
         RawInputMouseHelper.dx += x;
         RawInputMouseHelper.dy += y;
+    }
+
+    private WindowsNatives() {
     }
 
 }

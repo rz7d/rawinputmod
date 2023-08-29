@@ -1,0 +1,12 @@
+[
+  {
+    "modid": "inputtweaks",
+    "name": "InputTweaksX",
+    "description": "Provides Raw Input Support for older versions",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "authorList": [
+      "rz7d"
+    ]
+  }
+]

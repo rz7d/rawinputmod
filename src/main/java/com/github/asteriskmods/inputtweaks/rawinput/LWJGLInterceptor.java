@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import com.github.asteriskmods.inputtweaks.InputTweaks;
 import lombok.SneakyThrows;
 
-public class LWJGLAccess {
+public final class LWJGLInterceptor {
 
     private static final int WM_INPUT = 0x00FF;
 
@@ -18,6 +18,7 @@ public class LWJGLAccess {
     private static final MethodHandle METHOD_defWindowProc;
 
     private static final Method setWindowProc;
+    private static boolean first = true;
 
     static {
         try {
@@ -39,14 +40,14 @@ public class LWJGLAccess {
     }
 
     @SneakyThrows
-    public static void inject() {
-        Method windowProc = LWJGLAccess.class.getDeclaredMethod("interceptMessage", long.class, int.class, long.class, long.class, long.class);
+    public static void replaceWindowProc() {
+        Method windowProc = LWJGLInterceptor.class.getDeclaredMethod("interceptWndProc", long.class, int.class, long.class, long.class, long.class);
         setWindowProc.invoke(null, windowProc);
-        WindowsNatives.initNatives();
+        WindowsNatives.init();
     }
 
     @SneakyThrows
-    private static long interceptMessage(long hwnd, int msg, long wParam, long lParam, long millis) {
+    private static long interceptWndProc(long hwnd, int msg, long wParam, long lParam, long millis) {
         if (InputTweaks.isRawInput) {
             if (first) {
                 first = false;
@@ -60,6 +61,6 @@ public class LWJGLAccess {
         return (long) METHOD_handleMessage.invokeExact(hwnd, msg, wParam, lParam, millis);
     }
 
-    private static boolean first = true;
+    private LWJGLInterceptor() { }
 
 }

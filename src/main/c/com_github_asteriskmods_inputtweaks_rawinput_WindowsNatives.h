@@ -12,7 +12,7 @@ extern "C" {
  * Method:    setMouseDeltaHandler
  * Signature: (Ljava/lang/reflect/Method;)V
  */
-JNIEXPORT void JNICALL Java_com_github_asteriskmods_inputtweaks_rawinput_WindowsNatives_setMouseDeltaHandler
+JNIEXPORT void JNICALL Java_com_github_asteriskmods_inputtweaks_rawinput_WindowsNatives_setMouseDeltaCallback
   (JNIEnv *, jclass, jobject);
 
 /*
